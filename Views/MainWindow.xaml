@@ -1,0 +1,511 @@
+<Window x:Class="AvitoMiniApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+        Title="Avito Mini" Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+    <Window.Resources>
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#666666"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#0066FF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="White">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="10" ShadowDepth="1"/>
+            </Border.Effect>
+            <Grid Margin="30,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <fa:IconImage Icon="Store" Width="24" Height="24" Foreground="#0066FF" Margin="0,0,12,0"/>
+                    <TextBlock Text="Avito Mini" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#333333"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button x:Name="AllAdsButton"
+                            Content="All Ads"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="AllAdsButton_Click"/>
+                    <Button x:Name="MyAdsButton"
+                            Content="My Ads"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="MyAdsButton_Click"/>
+                    <Button x:Name="CompletedButton"
+                            Content="Completed"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="CompletedButton_Click"/>
+                    <Border Width="1" Height="24" Background="#E0E0E0" Margin="12,0"/>
+                    <TextBlock x:Name="UserNameText"
+                               VerticalAlignment="Center"
+                               FontSize="14"
+                               Foreground="#666666"
+                               Margin="12,0"/>
+                    <Button Content="Logout"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="LogoutButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="30,20,30,30">
+            <Grid x:Name="AllAdsView" Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Background="#F8F9FA" CornerRadius="8" Padding="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <fa:IconImage Icon="Search" Width="16" Height="16" Foreground="#999999" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBox x:Name="SearchTextBox" 
+                                         Grid.Column="1"
+                                         BorderThickness="0" 
+                                         Background="Transparent"
+                                         VerticalContentAlignment="Center"
+                                         FontSize="14"
+                                         TextChanged="SearchTextBox_TextChanged"/>
+                            </Grid>
+                        </Border>
+
+                        <ComboBox x:Name="CategoryFilterComboBox" 
+                                  Grid.Column="1"
+                                  Width="180"
+                                  Height="44"
+                                  Margin="12,0"
+                                  FontSize="14"
+                                  SelectionChanged="CategoryFilterComboBox_SelectionChanged"/>
+
+                        <Button x:Name="SearchButton" 
+                                Grid.Column="2"
+                                Content="Найти" 
+                                Background="#0066FF" 
+                                Foreground="White"
+                                Padding="24,12"
+                                FontSize="14"
+                                Click="SearchButton_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="8"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#0052CC"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="AdsListControl">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" 
+                                        CornerRadius="12" 
+                                        Width="270" 
+                                        Margin="0,0,20,20"
+                                        Cursor="Hand">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="1"/>
+                                    </Border.Effect>
+                                    <StackPanel>
+                                        <Border Height="180" Background="#E0E0E0" CornerRadius="12,12,0,0">
+                                            <fa:IconImage Icon="Image" Width="48" Height="48" Foreground="#999999"/>
+                                        </Border>
+                                        <StackPanel Margin="16">
+                                            <TextBlock Text="{Binding Title}" 
+                                                       FontSize="16" 
+                                                       FontWeight="SemiBold" 
+                                                       Foreground="#333333"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,0,0,8"/>
+                                            <TextBlock FontSize="18" 
+                                                       FontWeight="Bold" 
+                                                       Foreground="#0066FF"
+                                                       Margin="0,0,0,8">
+                                                <Run Text="{Binding Price, StringFormat='{}{0:N0}'}"/>
+                                                <Run Text=" ₽"/>
+                                            </TextBlock>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                <fa:IconImage Icon="Tag" Width="12" Height="12" Foreground="#999999" Margin="0,0,6,0"/>
+                                                <TextBlock Text="{Binding CategoryName}"
+                                                           FontSize="12"
+                                                           Foreground="#666666"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <fa:IconImage Icon="MapMarkerAlt" Width="12" Height="12" Foreground="#999999" Margin="0,0,6,0"/>
+                                                <TextBlock Text="{Binding City}"
+                                                           FontSize="12"
+                                                           Foreground="#666666"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+
+            <Grid x:Name="MyAdsView" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Button Content="+ Создать объявление" 
+                        HorizontalAlignment="Right"
+                        Background="#0066FF" 
+                        Foreground="White"
+                        Padding="20,12"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Margin="0,0,0,20"
+                        Click="CreateAdButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="8"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#0052CC"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="MyAdsListControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" 
+                                        CornerRadius="12" 
+                                        Padding="20" 
+                                        Margin="0,0,0,16">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="1"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Title}" 
+                                                       FontSize="18" 
+                                                       FontWeight="SemiBold" 
+                                                       Foreground="#333333"
+                                                       Margin="0,0,0,8"/>
+                                            <TextBlock FontSize="20" 
+                                                       FontWeight="Bold" 
+                                                       Foreground="#0066FF"
+                                                       Margin="0,0,0,12">
+                                                <Run Text="{Binding Price, StringFormat='{}{0:N0}'}"/>
+                                                <Run Text=" ₽"/>
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding Description}" 
+                                                       FontSize="14" 
+                                                       Foreground="#666666"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,0,0,8"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding CategoryName}" 
+                                                           FontSize="13" 
+                                                           Foreground="#999999"
+                                                           Margin="0,0,16,0"/>
+                                                <TextBlock Text="{Binding City}" 
+                                                           FontSize="13" 
+                                                           Foreground="#999999"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Завершить" 
+                                                    Background="#00C853" 
+                                                    Foreground="White"
+                                                    Padding="16,10"
+                                                    FontSize="13"
+                                                    Margin="0,0,8,0"
+                                                    Tag="{Binding AdId}"
+                                                    Click="CompleteAdButton_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                                            CornerRadius="6"
+                                                                            Padding="{TemplateBinding Padding}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#00A843"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button Content="Редактировать" 
+                                                    Background="#FF9800" 
+                                                    Foreground="White"
+                                                    Padding="16,10"
+                                                    FontSize="13"
+                                                    Margin="0,0,8,0"
+                                                    Tag="{Binding}"
+                                                    Click="EditAdButton_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                                            CornerRadius="6"
+                                                                            Padding="{TemplateBinding Padding}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#F57C00"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Button Content="Удалить" 
+                                                    Background="#F44336" 
+                                                    Foreground="White"
+                                                    Padding="16,10"
+                                                    FontSize="13"
+                                                    Tag="{Binding AdId}"
+                                                    Click="DeleteAdButton_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                                            CornerRadius="6"
+                                                                            Padding="{TemplateBinding Padding}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#D32F2F"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+
+            <Grid x:Name="CompletedView" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,20">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Text="Общая статистика" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#333333"
+                                   Margin="0,0,0,16"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Завершено сделок" 
+                                           FontSize="13" 
+                                           Foreground="#666666"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="TotalCompletedText" 
+                                           FontSize="24" 
+                                           FontWeight="Bold" 
+                                           Foreground="#0066FF"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Общая прибыль" 
+                                           FontSize="13" 
+                                           Foreground="#666666"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="TotalProfitText" 
+                                           FontSize="24" 
+                                           FontWeight="Bold" 
+                                           Foreground="#00C853"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="CompletedAdsListControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" 
+                                        CornerRadius="12" 
+                                        Padding="20" 
+                                        Margin="0,0,0,16">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="1"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Title}" 
+                                                       FontSize="16" 
+                                                       FontWeight="SemiBold" 
+                                                       Foreground="#333333"
+                                                       Margin="0,0,0,12"/>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Margin="0,0,32,0">
+                                                    <TextBlock Text="Запрашивалось" 
+                                                               FontSize="12" 
+                                                               Foreground="#999999"
+                                                               Margin="0,0,0,4"/>
+                                                    <TextBlock FontSize="16" 
+                                                               Foreground="#666666">
+                                                        <Run Text="{Binding OriginalPrice, StringFormat='{}{0:N0}'}"/>
+                                                        <Run Text=" ₽"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Margin="0,0,32,0">
+                                                    <TextBlock Text="Продано за" 
+                                                               FontSize="12" 
+                                                               Foreground="#999999"
+                                                               Margin="0,0,0,4"/>
+                                                    <TextBlock FontSize="16" 
+                                                               Foreground="#0066FF"
+                                                               FontWeight="SemiBold">
+                                                        <Run Text="{Binding FinalPrice, StringFormat='{}{0:N0}'}"/>
+                                                        <Run Text=" ₽"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="Прибыль" 
+                                                               FontSize="12" 
+                                                               Foreground="#999999"
+                                                               Margin="0,0,0,4"/>
+                                                    <TextBlock FontSize="16" 
+                                                               Foreground="#00C853"
+                                                               FontWeight="Bold">
+                                                        <Run Text="{Binding Profit, StringFormat='{}{0:N0}'}"/>
+                                                        <Run Text=" ₽"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <TextBlock Grid.Column="1" 
+                                                   Text="{Binding CompletedAt, StringFormat='dd.MM.yyyy'}" 
+                                                   FontSize="13" 
+                                                   Foreground="#999999"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

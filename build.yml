@@ -1,0 +1,37 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop, feature-* ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore AvitoMiniApp/AvitoMiniApp.sln
+      
+    - name: Build
+      run: dotnet build AvitoMiniApp/AvitoMiniApp.sln --configuration Release --no-restore
+      
+    - name: Test
+      run: dotnet test AvitoMiniApp/AvitoMiniApp.sln --configuration Release --no-build --verbosity normal
+      
+    - name: Publish
+      run: dotnet publish AvitoMiniApp/AvitoMiniApp/AvitoMiniApp.csproj --configuration Release --output ./publish
+      
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: AvitoMiniApp-Release
+        path: ./publish
