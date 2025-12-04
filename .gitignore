@@ -69,5 +69,8 @@ $RECYCLE.BIN/
 # VS Code directories
 .vscode/
 
+# Claude Code
+.claude/
+
 # Mac system files
 .DS_Store
